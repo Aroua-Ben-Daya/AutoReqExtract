@@ -6,7 +6,6 @@ from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
 # File paths
-# File paths
 #pdf_path=pdf_path ="D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R1/X2R1-T5.3-D-SIE-102-20_-_D5.1_-_Moving_Block_System_Requirements.pdf"
 #pdf_path ="D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R3/X2R3-T4_3-D-SMD-008-19_-_D4.2Part3-SystemSpecification.pdf"
 #pdf_path = "D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R5/X2R5-T4_2-D-SMD-003-23_-_D41Part3SystemSpecification.pdf"
@@ -74,17 +73,20 @@ def extract_requirements(pdf_path):
                     if traceability_match:
                         last_traceability = traceability_match.group(1).strip()
                         print(f"🔵 Found Traceability: {last_traceability}")
+                    elif "[New]" in line:  # Special case for "[New]" traceability
+                        last_traceability = "[New]"
+                        print("🔵 Found Traceability: New")
 
                     # Extract requirement ID
                     req_match = req_pattern.search(line)
                     if req_match:
                         req_id = req_match.group(1)
-                        
+
                         # Détection du bon format de traceability
-                        if req_match.group(2):  # Si la traceability est sur la même ligne
+                        if req_match.group(2):  # If traceability is on the same line
                             traceability = req_match.group(2).strip("[]")
                         else:
-                            traceability = last_traceability  # Sinon, utiliser la dernière trouvée
+                            traceability = last_traceability  # Otherwise, use the last traceability found
 
                         # Extract description
                         description = extract_description(lines, idx + 1)
