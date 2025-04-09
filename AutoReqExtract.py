@@ -14,7 +14,7 @@ excel_template = "D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/req Eng.xlsx"
 
 # Output file
 pdf_filename = os.path.basename(pdf_path).replace(".pdf", "")
-output_excel = f"C:/Users/aroua/Downloads/{pdf_filename}_Resultou.xlsx"
+output_excel = f"C:/Users/aroua/Downloads/{pdf_filename}_Result.xlsx"
 
 # Load Excel template
 wb = load_workbook(excel_template)
@@ -29,7 +29,8 @@ required_columns = ["Topic", "Requirement ID", "Description", "Traceability"]
 req_pattern = re.compile(r"(REQ-[A-Za-z0-9]+-\d+|\bREQ-[A-Za-z0-9]+)\s*(\[[^\]]+\])?")
 traceability_pattern = re.compile(r"\[(X2R\d+ D\d+\.\d+: REQ-[A-Za-z0-9-]+)\]")
 
-footer_pattern = re.compile(r"GA\s\d+\s+Page\s\d+\s+of\s+\d+", re.IGNORECASE)
+footer_pattern = re.compile(r"(GA\s*\d+\s*)?Page\s+\d+\s+of\s+\d+", re.IGNORECASE)
+
 
 # Function to extract description
 def extract_description(lines, start_idx):
