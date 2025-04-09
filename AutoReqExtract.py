@@ -9,7 +9,7 @@ from openpyxl.styles import Alignment
 #pdf_path=pdf_path ="D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R1/X2R1-T5.3-D-SIE-102-20_-_D5.1_-_Moving_Block_System_Requirements.pdf"
 #pdf_path ="D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R3/X2R3-T4_3-D-SMD-008-19_-_D4.2Part3-SystemSpecification.pdf"
 #pdf_path = "D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R5/X2R5-T4_2-D-SMD-003-23_-_D41Part3SystemSpecification.pdf"
-pdf_path=pdf_path ="D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R1/X2R1-T5.3-D-SIE-102-20_-_D5.1_-_Moving_Block_System_Requirements.pdf"
+pdf_path ="D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/X2R1/X2R1-T5.3-D-SIE-102-20_-_D5.1_-_Moving_Block_System_Requirements.pdf"
 excel_template = "D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/req Eng.xlsx"
 
 # Output file
@@ -103,6 +103,9 @@ data = extract_requirements(pdf_path)
 
 # Convert to DataFrame
 extracted_df = pd.DataFrame(data, columns=required_columns)
+# Remove duplicate Requirement IDs (keep the first occurrence)
+extracted_df.drop_duplicates(subset=["Requirement ID"], keep="first", inplace=True)
+
 
 # ✅ Vérification des premières lignes
 print(extracted_df.head())
