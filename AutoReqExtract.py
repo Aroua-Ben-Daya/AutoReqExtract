@@ -14,7 +14,7 @@ excel_template = "D:/UNIVERSITE D'AIX MARSEILLE/Day 1 03_03_2025/req Eng.xlsx"
 
 # Output file
 pdf_filename = os.path.basename(pdf_path).replace(".pdf", "")
-output_excel = f"C:/Users/aroua/Downloads/{pdf_filename}_Result.xlsx"
+output_excel = f"C:/Users/aroua/Downloads/{pdf_filename}_Resultou.xlsx"
 
 # Load Excel template
 wb = load_workbook(excel_template)
@@ -25,7 +25,7 @@ columns_needed = [cell.value for cell in ws[1] if cell.value]
 required_columns = ["Topic", "Requirement ID", "Description", "Traceability"]
 
 # Patterns for extraction
-topic_pattern = re.compile(r"^\s*(\d+\.\d+)\s+([A-Za-z][A-Za-z0-9 \-]+)")
+#topic_pattern = re.compile(r"^\s*(\d+\.\d+)\s+([A-Za-z][A-Za-z0-9 \-]+)")
 req_pattern = re.compile(r"(REQ-[A-Za-z0-9]+-\d+|\bREQ-[A-Za-z0-9]+)\s*(\[[^\]]+\])?")
 traceability_pattern = re.compile(r"\[(X2R\d+ D\d+\.\d+: REQ-[A-Za-z0-9-]+)\]")
 
@@ -60,13 +60,22 @@ def extract_requirements(pdf_path):
                     # Remove footers
                     line = footer_pattern.sub("", line).strip()
 
-                    # Detect major section topics (3.1, 3.2, etc.)
-                    topic_match = topic_pattern.match(line)
-                    if topic_match:
-                        section_number = topic_match.group(1).strip()
-                        topic_name = topic_match.group(2).strip()
+                    # Try normal topic format: "6.1 Train Location"
+                    normal_topic = re.match(r"^\s*(\d+\.\d+)\s+([A-Za-z][A-Za-z0-9 \-/]+)$", line)
+                    compact_topic = re.match(r"^\s*(\d+\.\d+)([A-Z][A-Za-z0-9]+)\s*(.*)$", line)
+
+                    if normal_topic:
+                        section_number = normal_topic.group(1)
+                        topic_name = normal_topic.group(2).strip()
                         current_topic = f"{section_number} - {topic_name}"
-                        print(f"✅ Detected Topic: {current_topic}")
+                        print(f"✅ Detected Topic (normal): {current_topic}")
+
+                    elif compact_topic:
+                        section_number = compact_topic.group(1)
+                        section_code = compact_topic.group(2)
+                        rest = compact_topic.group(3).strip()
+                        current_topic = f"{section_number} - {section_code} {rest}".strip()
+                        print(f"✅ Detected Topic (compact): {current_topic}")
 
                     # Detect traceability anywhere in the text
                     traceability_match = traceability_pattern.search(line)
